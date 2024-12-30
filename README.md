@@ -51,19 +51,3 @@ Este proyecto combina IoT, aprendizaje automático y desarrollo web para monitor
 
 4. **Almacenamiento y API REST:**
    - Node.js y Express gestionan el flujo de datos hacia MongoDB y exponen una API para el frontend.
-
----
-
-## **Cómo Ejecutar el Proyecto**
-### **Requisitos Previos**
-1. Placa NodeMCU ESP8266 y sensor DHT11.
-2. Servidor MQTT (puedes usar Mosquitto o un servidor en la nube como HiveMQ).
-3. Node.js y npm instalados en tu máquina.
-4. MongoDB configurado localmente o en la nube (MongoDB Atlas).
-5. Python y librerías necesarias para entrenar el modelo LSTM.
-
-### **Pasos para la Configuración**
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/tu-usuario/nombre-proyecto.git
-   cd nombre-proyecto
