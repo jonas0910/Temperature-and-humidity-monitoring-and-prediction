@@ -12,24 +12,30 @@ const Dashboard = () => {
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [limit, setLimit] = useState(1000);
   const [loading, setLoading] = useState(false);
 
-  const fetchData = async (startDate, endDate) => {
+  const fetchData = async (startDate, endDate, limit = 1000) => {
     try {
       setLoading(true);
-      const url = new URL("http://192.168.0.104:3000/data");
+      const url = new URL("http://localhost:3000/api/data");
+  
       if (startDate && endDate) {
         url.searchParams.append("startDate", startDate);
         url.searchParams.append("endDate", endDate);
       }
-
+      
+      if (limit) {
+        url.searchParams.append("limit", limit);
+      }
+  
       const response = await fetch(url);
       const rawData = await response.json();
-
+  
       // Transformar las fechas en un formato legible
       const formattedData = rawData.map((item) => ({
         ...item,
-        time: new Date(item.time).toLocaleString("es-ES", {
+        time: new Date(item.time).toLocaleString("es-PE", {
           day: "2-digit",
           month: "2-digit",
           year: "numeric",
@@ -38,7 +44,7 @@ const Dashboard = () => {
           second: "2-digit",
         }),
       }));
-
+  
       setData(formattedData);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -46,10 +52,11 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
-    fetchData(startDate, endDate);
-  }, [startDate, endDate]);
+    fetchData(startDate, endDate, limit);
+  }, [startDate, endDate, limit]);
 
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
@@ -59,6 +66,9 @@ const Dashboard = () => {
     setEndDate(e.target.value);
   };
 
+  const handleLimitChange = (e) => {
+    setLimit(e.target.value);
+  }
   return (
     <div className="p-4 flex flex-col items-center bg-gray-100">
       <h1 className="text-2xl mb-4">Sensor Dashboard</h1>
@@ -75,6 +85,12 @@ const Dashboard = () => {
           type="date"
           value={endDate}
           onChange={handleEndDateChange}
+          className="p-2 border rounded"
+        />
+        <input
+          type="number"
+          value={limit}
+          onChange={handleLimitChange}
           className="p-2 border rounded"
         />
         <button
