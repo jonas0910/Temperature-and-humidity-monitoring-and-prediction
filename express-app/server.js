@@ -6,8 +6,11 @@ const sensorRoutes = require("./routes/sensorRoutes");
 require("./config/mqttClient");
 
 const app = express();
-app.use(cors());
-
+app.use(cors({
+    origin: ["http://localhost:3000", "https://tu-frontend.vercel.app"], 
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 
 // Rutas
