@@ -1,27 +1,14 @@
-// import logo from './logo.svg';
-import './App.css';
 import Dashboard from './components/dashboard';
+import { RealTimeGrafic } from './components/real-time-grafic';
 import TemperatureHumidityReport from './components/temperature-humidity-report';
+import dayjs from 'dayjs';
 
 function App() {
   return (
     <div className="App">
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header> */}
       <Dashboard />
-      <TemperatureHumidityReport day="2024-09-16" />
+      <RealTimeGrafic />
+      <TemperatureHumidityReport day={dayjs(new Date()).format("YYYY-MM-DD")} />
     </div>
   );
 }

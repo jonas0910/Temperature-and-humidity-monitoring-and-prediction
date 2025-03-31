@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaThermometerHalf, FaTint } from "react-icons/fa"; // Íconos para temperatura y humedad
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const TemperatureHumidityReport = ({ day }) => {
   const [data, setData] = useState([]);
@@ -11,22 +17,32 @@ const TemperatureHumidityReport = ({ day }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:3000/data/average/${day}`);
+        const response = await axios.get(`http://localhost:3000/api/data/average/${day}`);
 
         // Formatear las horas para que se muestren correctamente
+        // const formattedData = response.data.map((item) => ({
+        //   ...item,
+        //   hour: new Date(2024, 0, 1, item.hour).toLocaleString("es-ES", {
+        //     hour: "2-digit",
+        //     minute: "2-digit",
+        //     hour12: false, // Usar formato de 24 horas
+        //   }),
+        // }));
         const formattedData = response.data.map((item) => ({
           ...item,
-          hour: new Date(2024, 0, 1, item.hour).toLocaleString("es-ES", {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false, // Usar formato de 24 horas
-          }),
-        }));
+          hour: dayjs()
+            .set("hour", item.hour)
+            .set("minute", 0)
+            .set("second", 0)
+            .tz("America/Lima")
+            .format("HH:mm"),
+        }));  
 
         setData(formattedData);
         setLoading(false);
       } catch (err) {
-        setError("Error fetching data");
+        setError("Error fetching data" + err);
+
         setLoading(false);
       }
     };
