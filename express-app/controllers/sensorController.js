@@ -10,6 +10,30 @@ exports.getData = async (req, res) => {
   try {
     const { startDate, endDate, limit } = req.query;
 
+    // Si no se envían startDate y endDate, devolver los últimos 100 datos
+    if (!startDate && !endDate) {
+      const maxLimit = 100; // Limite de 100 datos si no se especifican las fechas
+      const requestedLimit = parseInt(limit) || maxLimit;
+
+      // Obtener los últimos datos desde Supabase
+      const { data, error } = await supabaseClient
+        .from("sensor_data")
+        .select("*")
+        .order("time", { ascending: false }) // Ordenamos por tiempo descendente
+        .limit(Math.min(requestedLimit, maxLimit)); // Usar el límite solicitado o el máximo permitido
+
+      if (error) throw error;
+
+      // Convertir las fechas a la zona horaria de Perú
+      const reducedData = data.map((item) => ({
+        ...item,
+        time: convertToPeruTimezone(item.time),
+      }));
+
+      return res.json(reducedData);
+    }
+
+    // Si se envían startDate y endDate, usar esos valores
     if (!startDate || !endDate) {
       return res.status(400).json({ error: "startDate and endDate are required" });
     }
@@ -17,7 +41,7 @@ exports.getData = async (req, res) => {
     const maxLimit = 30000; // Máximo permitido
     const requestedLimit = parseInt(limit) || maxLimit;
 
-    // Obtener datos desde Supabase
+    // Obtener datos desde Supabase con rango de fechas
     const { data, error } = await supabaseClient
       .from("sensor_data")
       .select("*")
@@ -39,6 +63,7 @@ exports.getData = async (req, res) => {
     res.status(500).json({ error: "Error fetching data", message: error.message });
   }
 };
+
 
 // Obtener promedios horarios de temperatura y humedad
 exports.getHourlyAverages = async (req, res) => {
