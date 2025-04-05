@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   LineChart,
   Line,
@@ -15,10 +15,10 @@ const Dashboard = () => {
   const [limit, setLimit] = useState(1000);
   const [loading, setLoading] = useState(false);
 
-  const fetchData = async (startDate, endDate, limit = 1000) => {
+  const fetchData = async (startDate, endDate, limit) => {
     try {
       setLoading(true);
-      const url = new URL("http://localhost:3000/api/data");
+      const url = new URL(process.env.REACT_APP_API_URL + "/data");
   
       if (startDate && endDate) {
         url.searchParams.append("startDate", startDate);
@@ -39,9 +39,9 @@ const Dashboard = () => {
           day: "2-digit",
           month: "2-digit",
           year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
+          // hour: "2-digit",
+          // minute: "2-digit",
+          // second: "2-digit",
         }),
       }));
   
@@ -54,9 +54,9 @@ const Dashboard = () => {
   };
   
 
-  useEffect(() => {
-    fetchData(startDate, endDate, limit);
-  }, [startDate, endDate, limit]);
+  // useEffect(() => {
+  //   fetchData(startDate, endDate, limit);
+  // }, [startDate, endDate, limit]);
 
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
@@ -94,7 +94,7 @@ const Dashboard = () => {
           className="p-2 border rounded"
         />
         <button
-          onClick={() => fetchData(startDate, endDate)}
+          onClick={() => fetchData(startDate, endDate, limit)}
           className="px-4 py-2 bg-blue-500 text-white rounded"
         >
           Filtrar

@@ -17,7 +17,8 @@ const TemperatureHumidityReport = ({ day }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:3000/api/data/average/${day}`);
+        console.log(process.env.REACT_APP_API_URL);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/data/average/${day}`);
 
         // Formatear las horas para que se muestren correctamente
         // const formattedData = response.data.map((item) => ({
